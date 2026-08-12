@@ -1,7 +1,11 @@
 const { Listener, Events } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
+/* RSS */
 const { IntervalRSS } = require('../lib/IntervalRSS');
+/* DB */
+const pool = require('../lib/database');
+const { initDatabase } = require('../lib/initDatabase');
 
 class ReadyListener extends Listener {
   constructor(context, options) {
@@ -18,7 +22,36 @@ async run(client) {
 
 
     // IntervalRSS; // Start the interval for checking RSS feeds every 30 minutes
-    
+    pool.connect()
+      .then(() => {
+        console.log('✅ Connecté à la base de données PostgreSQL');
+      })
+      .catch((err) => {
+        console.error('❌ Erreur lors de la connexion à la base de données PostgreSQL:', err);
+      });
+
+    // Initialize the database tables
+    initDatabase()
+      .then(() => {
+        console.log('✅ Base de données initialisée avec succès.');
+      })
+      .catch((err) => {
+        console.error('❌ Erreur lors de l\'initialisation de la base de données:', err);
+      });
+
+      // Add a guild to the database when the bot is ready
+      pool.query(
+        `INSERT INTO guilds (guild_id, name, member_count, joined_at, owner_id)
+         VALUES ($1, $2, $3, NOW(), $4)
+          ON CONFLICT (guild_id) DO NOTHING`,
+        [client.guilds.cache.first().id, client.guilds.cache.first().name, client.guilds.cache.first().memberCount, client.guilds.cache.first().ownerId]
+      )
+      .then(() => {
+        console.log('✅ Guild ajoutée à la base de données.');
+      })
+      .catch((err) => {
+        console.error('❌ Erreur lors de l\'ajout de la guild à la base de données:', err);
+      });
   }
 }
 
