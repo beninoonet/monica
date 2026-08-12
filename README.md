@@ -21,6 +21,7 @@ Monica est mon projet de bot discord personnel qui m'aide à gérer mon serveur 
 | RSS             | Check every 30 minutes a RSS link to send with a webhook | ✅     |
 | Music           | Play a music with spotify                                | ❌     |
 | Reminder        | Command to send a message to user after x times          | ❌     |
+| Database        | Connection to PostGres DB                                | ✅     |
 
 ## Installation
 
