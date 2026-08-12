@@ -2,7 +2,7 @@ const { Listener, Events } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
 /* RSS */
-const { IntervalRSS } = require('../lib/IntervalRSS');
+const { IntervalRSS } = require('../lib/RSS/IntervalRSS');
 /* DB */
 const pool = require('../lib/database');
 const { initDatabase } = require('../lib/initDatabase');
