@@ -13,7 +13,27 @@ const client = new SapphireClient({
   loadMessageCommandListeners: true,
   loadDefaultErrorListeners: true,
 
+
 });
 
+client.on('messageCreate', (message) => {
+  if (message.content === 'join') {
+    try {
+      client.emit('guildMemberAdd', message.member);
+      }
+     catch (error) {
+      console.error('Error executing join message listener:', error);
+    }
+  }
+
+  if (message.content === 'quit') {
+    try {
+      client.emit('guildMemberRemove', message.member);
+      }
+     catch (error) {
+      console.error('Error executing quit message listener:', error);
+    }
+  }
+});
 
 client.login(process.env.DISCORD_TOKEN)
