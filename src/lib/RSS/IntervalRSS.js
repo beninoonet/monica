@@ -5,5 +5,5 @@ const { checkMangaRSS, checkAppliRSS } = require('./checkRSS');
 const IntervalRSS = setInterval(async () => {
       await checkMangaRSS();
       await checkAppliRSS();
-    }, 30 * 60 * 1000); // Check every 30 minutes
+    }, 12 * 60 * 60 * 1000); // 12 hours
 module.exports = { IntervalRSS };
