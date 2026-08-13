@@ -39,11 +39,12 @@ async run(client) {
     });
 
       // Add a guild to the database when the bot is ready
-      pool.query(
+      for (const guild of client.guilds.cache.values()) {
+        pool.query(
         `INSERT INTO guilds (guild_id, name, member_count, joined_at, owner_id)
          VALUES ($1, $2, $3, NOW(), $4)
           ON CONFLICT (guild_id) DO NOTHING`,
-        [client.guilds.cache.first().id, client.guilds.cache.first().name, client.guilds.cache.first().memberCount, client.guilds.cache.first().ownerId]
+        [guild.id, guild.name, guild.memberCount, guild.ownerId]
       )
       .then(() => {
         console.log('✅ Guild ajoutée à la base de données.');
@@ -51,6 +52,7 @@ async run(client) {
       .catch((err) => {
         console.error('❌ Erreur lors de l\'ajout de la guild à la base de données:', err);
       });
+    }
     
 
   }
