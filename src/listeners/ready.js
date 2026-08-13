@@ -41,7 +41,7 @@ async run(client) {
       // Add a guild to the database when the bot is ready
       for (const guild of client.guilds.cache.values()) {
         pool.query(
-        `INSERT INTO guilds (guild_id, name, member_count, joined_at, owner_id)
+        `INSERT INTO monica_guilds (guild_id, name, member_count, joined_at, owner_id)
          VALUES ($1, $2, $3, NOW(), $4)
           ON CONFLICT (guild_id) DO NOTHING`,
         [guild.id, guild.name, guild.memberCount, guild.ownerId]
