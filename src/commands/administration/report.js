@@ -37,12 +37,12 @@ class ReporterCommand extends Command {
         const guildId = interaction.guild.id;
 
         const res = await pool.query(
-            "SELECT report_channel_id FROM guilds WHERE guild_id = $1",
+            "SELECT report_channel_id FROM monica_guilds WHERE guild_id = $1",
             [guildId]
         );
 
         const resOwner = await pool.query(
-            "SELECT owner_id FROM guilds WHERE guild_id = $1",
+            "SELECT owner_id FROM monica_guilds WHERE guild_id = $1",
             [guildId]
         );
 

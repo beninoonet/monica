@@ -18,7 +18,7 @@ class JoinMemberListener extends Listener {
     async run(member) {
         // Update Member Count in the database
         pool.query(
-            `UPDATE guilds SET member_count = $1 WHERE guild_id = $2`,
+            `UPDATE monica_guilds SET member_count = $1 WHERE guild_id = $2`,
             [member.guild.memberCount, member.guild.id]
         )
         .then(() => {
@@ -30,7 +30,7 @@ class JoinMemberListener extends Listener {
 
         // get the welcome channel from DB
         const result = await pool.query(
-            `SELECT welcome_channel_id FROM guilds WHERE guild_id = $1`,
+            `SELECT welcome_channel_id FROM monica_guilds WHERE guild_id = $1`,
             [member.guild.id]
         );
         if (result.rows.length === 0 || !result.rows[0].welcome_channel_id) {

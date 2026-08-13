@@ -3,7 +3,7 @@ const pool = require('./database');
 
 async function getLogChannel(guildId) {
     try {
-        const result = await pool.query('SELECT log_channel_id FROM guilds WHERE guild_id = $1', [guildId]);
+        const result = await pool.query('SELECT log_channel_id FROM monica_guilds WHERE guild_id = $1', [guildId]);
 
         if (result.rows.length === 0 || !result.rows[0].log_channel_id) {
             console.warn(`⚠️ Aucune entrée trouvée pour la guilde avec l'ID ${guildId} dans la base de données.`);
