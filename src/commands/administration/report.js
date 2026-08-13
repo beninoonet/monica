@@ -1,6 +1,8 @@
 const { Command } = require("@sapphire/framework");
 const { EmbedBuilder, MessageFlags } = require("discord.js");
 
+// database
+const pool = require("../../lib/database");
 
 class ReporterCommand extends Command {
   constructor(context, options) {
@@ -32,12 +34,35 @@ class ReporterCommand extends Command {
   }
 
     async chatInputRun(interaction) {
+        const guildId = interaction.guild.id;
+
+        const res = await pool.query(
+            "SELECT report_channel_id FROM guilds WHERE guild_id = $1",
+            [guildId]
+        );
+
+        const resOwner = await pool.query(
+            "SELECT owner_id FROM guilds WHERE guild_id = $1",
+            [guildId]
+        );
+
+        const ownerId = resOwner.rows[0].owner_id;
+
+        if (res.rows.length === 0 || !res.rows[0].report_channel_id) {
+            return interaction.reply({
+                content: "Le canal de signalement n'a pas été configuré pour se serveur.",
+                ephemeral: MessageFlags.Ephemeral,
+            });
+        }
+
+        const reportChannelId = res.rows[0].report_channel_id;
+
         const reporter = interaction.user;
         const reportedUser = interaction.options.getUser("user");
         const reason =
             interaction.options.getString("reason");
 
-        const reportChannel = interaction.guild.channels.cache.get(process.env.REPORT_CHANNEL);
+        const reportChannel = interaction.guild.channels.cache.get(reportChannelId);
 
         if (!reportChannel) {
             return interaction.reply({
@@ -71,7 +96,9 @@ class ReporterCommand extends Command {
             .setThumbnail(reportedUser.displayAvatarURL())
             .setColor(0xff0000);
         
-            reportChannel.send({ embeds: [reportEmbed] });
+            reportChannel.send({ 
+              content: `<@${ownerId}>`,
+              embeds: [reportEmbed] });
 
 
     }

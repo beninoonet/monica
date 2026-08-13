@@ -1,4 +1,5 @@
-const { Listener, Events } = require('@sapphire/framework');
+require("dotenv").config();
+const { Listener, Events, container } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
 /* RSS */
@@ -20,7 +21,6 @@ async run(client) {
     
     client.user.setActivity('💗 Amour Parano', { type: ActivityType.Listening });
 
-
     // IntervalRSS; // Start the interval for checking RSS feeds every 30 minutes
     pool.connect()
       .then(() => {
@@ -31,13 +31,12 @@ async run(client) {
       });
 
     // Initialize the database tables
-    initDatabase()
-      .then(() => {
-        console.log('✅ Base de données initialisée avec succès.');
-      })
-      .catch((err) => {
-        console.error('❌ Erreur lors de l\'initialisation de la base de données:', err);
-      });
+    initDatabase().then(() => {
+      console.log('✅ Tables de la base de données initialisées');
+    }
+    ).catch((err) => {
+      console.error('❌ Erreur lors de l\'initialisation des tables de la base de données:', err);
+    });
 
       // Add a guild to the database when the bot is ready
       pool.query(
@@ -52,6 +51,8 @@ async run(client) {
       .catch((err) => {
         console.error('❌ Erreur lors de l\'ajout de la guild à la base de données:', err);
       });
+    
+
   }
 }
 
