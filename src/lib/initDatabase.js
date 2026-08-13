@@ -9,7 +9,8 @@ async function initDatabase() {
                 member_count INT NOT NULL,
                 joined_at TIMESTAMP NOT NULL,
                 owner_id TEXT NOT NULL,
-                welcome_channelId TEXT,
+                welcome_channel_id TEXT,
+                log_channel_id TEXT,
                 UNIQUE (guild_id)
             );
             `);

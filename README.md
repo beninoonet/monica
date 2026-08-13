@@ -19,7 +19,7 @@ Monica est mon projet de bot discord personnel qui m'aide à gérer mon serveur 
 | Report          | Command to report a member on guild                      | ✅     |
 | Join & Quit MSG | Send a message to join & quit member on guild            | ✅     |
 | RSS             | Check every 30 minutes a RSS link to send with a webhook | ✅     |
-| Music           | Play a music with spotify                                | ❌     |
+| Music           | Play a music with spotify (but need to clean a code)     | ✅     |
 | Reminder        | Command to send a message to user after x times          | ❌     |
 | Database        | Connection to PostGres DB                                | ✅     |
 

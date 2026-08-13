@@ -5,11 +5,11 @@ require("dotenv").config();
 // get the log channel from DB
 const { getLogChannel } = require('../../lib/getLogChannel');
 
-class LogChannelCreateListener extends Listener {
+class LogChannelRemoveListener extends Listener {
     constructor(context, options) {
         super(context, {    
             ...options,
-            event: Events.ChannelCreate,
+            event: Events.ChannelDelete,
             once: false,
         });
     }
@@ -29,15 +29,15 @@ class LogChannelCreateListener extends Listener {
 
         // Create an embed for the log message
         const embed = new EmbedBuilder()
-            .setColor('#3494e3')
-            .setTitle('✅ Salon créé : ' + channel.name)
+            .setColor('#e33434')
+            .setTitle('❌ Salon Supprimé : ' + channel.name)
             .setAuthor({ name: channel.guild.name, iconURL: channel.guild.iconURL() })
-            .setDescription(`Un nouveau salon a été créé: ${channel.name}`)
+            .setDescription(`Un salon a été supprimé: ${channel.name}`)
             .setThumbnail(channel.guild.iconURL())
             .addFields(
                 { name: 'Type de salon', value: channel.type === 0 ? 'Texte' : 'Autre', inline: true },
-                { name: 'ID du salon', value: channel.id, inline: true },
-                { name: 'ID de la guilde', value: channel.guild.id, inline: true }
+                { name: 'ID du salon', value: channel.id, inline: false },
+                { name: 'ID de la guilde', value: channel.guild.id, inline: false }
             )
             .setTimestamp();
         
@@ -48,4 +48,4 @@ class LogChannelCreateListener extends Listener {
 
 }
 
-module.exports = { LogChannelCreateListener };
+module.exports = { LogChannelRemoveListener };
