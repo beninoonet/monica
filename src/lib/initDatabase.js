@@ -3,7 +3,7 @@ const pool = require('./database');
 async function initDatabase() {
     try {
         await pool.query(`
-            CREATE TABLE IF NOT EXISTS guilds (
+            CREATE TABLE IF NOT EXISTS monica_guilds (
                 guild_id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 member_count INT NOT NULL,
