@@ -11,6 +11,7 @@ async function initDatabase() {
                 owner_id TEXT NOT NULL,
                 welcome_channel_id TEXT,
                 log_channel_id TEXT,
+                report_channel_id TEXT,
                 UNIQUE (guild_id)
             );
             `);

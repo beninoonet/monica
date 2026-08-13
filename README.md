@@ -33,17 +33,34 @@ npm install
 after that, you need to create a `.env` file with the following content:
 
 ```
+# Discord bot configuration
 DISCORD_TOKEN=
 CLIENT_ID=
 GUILD_ID=
 
+# Webhook URLs
 MANGA_WEBHOOK_URL=
 APPLI_WEBHOOK_URL=
+
+# API keys
 RSS2JSON_API_KEY=
 
+# Discord channel IDs
 REPORT_CHANNEL=
 WELCOME_CHANNEL=
+LOG_CHANNEL=
 
+# Database configuration
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+
+# LAVALINK configuration
+LAVALINK_PASSWORD=
+LAVALINK_HOST=
+LAVALINK_PORT=
 ```
 
 after that, you can run the bot with the following command:
