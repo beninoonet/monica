@@ -2,8 +2,6 @@ require("dotenv").config();
 const { Listener, Events, container } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
-const { initKazagumo } = require('../lib/music/kazagumo');
-
 /* RSS */
 const { IntervalRSS } = require('../lib/RSS/IntervalRSS');
 /* DB */
@@ -22,9 +20,6 @@ async run(client) {
     console.log(`✅ Connecté en tant que ${client.user.tag}`);
     
     client.user.setActivity('💗 Amour Parano', { type: ActivityType.Listening });
-
-    // Initialize Kazagumo for music playback
-    container.kazagumo = initKazagumo(client);
 
     // IntervalRSS; // Start the interval for checking RSS feeds every 30 minutes
     pool.connect()
