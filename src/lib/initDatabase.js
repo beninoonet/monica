@@ -14,7 +14,26 @@ async function initDatabase() {
                 report_channel_id TEXT,
                 UNIQUE (guild_id)
             );
-            `);
+            CREATE TABLE IF NOT EXISTS monica_tasks (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                username TEXT NOT NULL,
+                task TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW(),
+                status TEXT DEFAULT 'pending',
+                UNIQUE (id)
+            );
+            CREATE TABLE IF NOT EXISTS monica_suggestions (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                username TEXT NOT NULL,
+                title TEXT NOT NULL,
+                suggestion TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW(),
+                UNIQUE (id)
+            );
+            `
+        );
         console.log('✅ Table "guilds" créée ou déjà existante.');
     }
     catch (error) {

@@ -21,7 +21,7 @@ async run(client) {
     
     client.user.setActivity('💗 Amour Parano', { type: ActivityType.Listening });
 
-    // IntervalRSS; // Start the interval for checking RSS feeds every 30 minutes
+    IntervalRSS; // every 12 hours
     pool.connect()
       .then(() => {
         console.log('✅ Connecté à la base de données PostgreSQL');
@@ -31,7 +31,7 @@ async run(client) {
       });
 
     // Initialize the database tables
-    initDatabase().then(() => {
+    await initDatabase().then(() => {
       console.log('✅ Tables de la base de données initialisées');
     }
     ).catch((err) => {

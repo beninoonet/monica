@@ -14,14 +14,16 @@ Monica est mon projet de bot discord personnel qui m'aide à gérer mon serveur 
 
 ## Features / Fonctionnalités
 
-| Name            | Status                                                   | Status |
-| --------------- | -------------------------------------------------------- | ------ |
-| Report          | Command to report a member on guild                      | ✅     |
-| Join & Quit MSG | Send a message to join & quit member on guild            | ✅     |
-| RSS             | Check every 30 minutes a RSS link to send with a webhook | ✅     |
-| Music           | Play a music with spotify (but need to clean a code)     | ✅     |
-| Reminder        | Command to send a message to user after x times          | ❌     |
-| Database        | Connection to PostGres DB                                | ✅     |
+| Name              | Status                                                 | Status |
+| ----------------- | ------------------------------------------------------ | ------ |
+| /report           | Command to report a member on guild                    | ✅     |
+| Join & Quit MSG   | Send a message to join & quit member on guild          | ✅     |
+| Rss               | Check every 12 hours a RSS link to send with a webhook | ✅     |
+| Music             | Play a music with spotify (but need to clean a code)   | ✅     |
+| /reminder         | Command to send a message to user after x minutes      | ✅     |
+| Database          | Connection to PostGres DB                              | ✅     |
+| /tasklist         | command tasklist connect with a db                     | ✅     |
+| Webhook URL on db | Connect a webhook url to db                            | ❌     |
 
 ## Installation
 
@@ -45,7 +47,7 @@ APPLI_WEBHOOK_URL=
 # API keys
 RSS2JSON_API_KEY=
 
-# Discord channel IDs
+# Discord channel IDs (only for testing )
 REPORT_CHANNEL=
 WELCOME_CHANNEL=
 LOG_CHANNEL=
