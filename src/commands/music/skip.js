@@ -22,4 +22,5 @@ class SkipCommand extends Command {
   }
 }
 
+
 module.exports = { SkipCommand };
