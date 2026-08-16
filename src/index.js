@@ -47,7 +47,7 @@ function formatDuration(ms) {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
-/* client.once('ready', () => {
+client.once('ready', () => {
 
   container.kazagumo = new Kazagumo(
     {
@@ -152,8 +152,7 @@ container.kazagumo.on('playerStart', (player, track) => {
     console.error('❌ Erreur player :', error);
   });
 });
- */
-
+ 
   
 
 // Command to test the join and quit events
