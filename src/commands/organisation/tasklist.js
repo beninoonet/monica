@@ -104,12 +104,12 @@ class TasksCommand extends Subcommand {
     async createRun(interaction) {
         const task = interaction.options.getString('task');
         const user = interaction.options.getUser('user') || interaction.user;
-
+        const username = user.username;
         try {
             const result = await pool.query(
-                `INSERT INTO monica_tasks (user_id, task) VALUES
+                `INSERT INTO monica_tasks (user_id, username, task) VALUES
                 ($1, $2) RETURNING id`,
-                [user.id, task]
+                [user.id, username,  task]
             );
 
             const createEmbed = new EmbedBuilder()
@@ -182,7 +182,7 @@ class TasksCommand extends Subcommand {
 
     async listRun(interaction) {
         const user = interaction.options.getUser('user') || interaction.user;
-
+        const username = user.username;
         try {
             const result = await pool.query(
                 `SELECT id, task, created_at, status FROM monica_tasks WHERE user_id = $1 ORDER BY created_at DESC`,
@@ -194,7 +194,7 @@ class TasksCommand extends Subcommand {
                     .setColor('#FFFF00')
                     .setTitle('Aucune tâche trouvée')
                     .setDescription(`Aucune tâche n'a été trouvée pour ${user.tag}.`)
-                    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+                    .setAuthor({ name: username, iconURL: user.displayAvatarURL() })
                     .setTimestamp();
                 interaction.reply({
                     embeds: [noTasksEmbed],
