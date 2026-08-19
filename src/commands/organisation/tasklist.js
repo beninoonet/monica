@@ -107,9 +107,9 @@ class TasksCommand extends Subcommand {
         const username = user.username;
         try {
             const result = await pool.query(
-                `INSERT INTO monica_tasks (user_id, username, task) VALUES
-                ($1, $2) RETURNING id`,
-                [user.id, username,  task]
+                `INSERT INTO monica_tasks (user_id, username, task, status) VALUES
+                ($1, $2, $3, $4) RETURNING id`,
+                [user.id, username, task, 'pending']
             );
 
             const createEmbed = new EmbedBuilder()
@@ -191,7 +191,7 @@ class TasksCommand extends Subcommand {
 
             if (result.rowCount === 0) {
                 const noTasksEmbed = new EmbedBuilder()
-                    .setColor('#FFFF00')
+                    .setColor('#7a34ba')
                     .setTitle('Aucune tâche trouvée')
                     .setDescription(`Aucune tâche n'a été trouvée pour ${user.tag}.`)
                     .setAuthor({ name: username, iconURL: user.displayAvatarURL() })

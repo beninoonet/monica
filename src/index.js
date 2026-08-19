@@ -156,7 +156,7 @@ container.kazagumo.on('playerStart', (player, track) => {
   
 
 // Command to test the join and quit events
-/* client.on('messageCreate', (message) => {
+client.on('messageCreate', (message) => {
   if (message.content === 'join') {
     try {
       client.emit('guildMemberAdd', message.member);
@@ -174,6 +174,6 @@ container.kazagumo.on('playerStart', (player, track) => {
       console.error('Error executing quit message listener:', error);
     }
   }
-}); */
+});
 
 client.login(process.env.DISCORD_TOKEN)
