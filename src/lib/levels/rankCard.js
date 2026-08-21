@@ -111,11 +111,11 @@ function drawSection(ctx, { label, level, xp, xpNeeded, rank, x, y, width, barCo
     const textX = x + iconSize + iconGap;
 
     ctx.textAlign = 'left';
-    ctx.font = 'bold 22px CardFont-Bold';
+    ctx.font = 'bold 22px sans-serif';
     ctx.fillStyle = '#d7d9e0';
     ctx.fillText(`${label} — Niveau ${level}`, textX, y);
 
-    ctx.font = '18px CardFont';
+    ctx.font = '18px sans-serif';
     ctx.textAlign = 'right';
     const rankText = rank ? `#${rank} · ` : '';
     ctx.fillStyle = '#9a9cab';
@@ -172,7 +172,7 @@ async function generateRankCard({ username, avatarUrl, chat, voice, chatRank, vo
     // Pseudo
     const textX = avatarX + avatarSize + 40;
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 42px CardFont-Bold';
+    ctx.font = 'bold 42px sans-serif';
     ctx.fillText(username, textX, 90);
 
     // Barre Chat
