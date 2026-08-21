@@ -1,12 +1,8 @@
 require("dotenv").config();
 const { SapphireClient, ApplicationCommandRegistries, container } = require("@sapphire/framework");
-const { GatewayIntentBits, EmbedBuilder } = require("discord.js");
+const { GatewayIntentBits } = require("discord.js");
 // subcommand plugin
 const { SubcommandPluginIdentifiers } = require('@sapphire/plugin-subcommands');
-// Kazagumo and Shoukaku for music playback
-const { Kazagumo, Plugins } = require('kazagumo');
-const { Connectors } = require('shoukaku');
-
 
 
 // Init a command only on a specific guild for development
@@ -22,7 +18,7 @@ const client = new SapphireClient({
 
   loadMessageCommandListeners: true,
   loadDefaultErrorListeners: true,
-  
+
 });
 
 // Command to test the join and quit events
