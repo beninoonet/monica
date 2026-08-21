@@ -7,6 +7,16 @@ require("dotenv").config();
 // DB 
 const pool = require('../../lib/database');
 
+GlobalFonts.registerFromPath(
+    path.join(__dirname, '../../assets/fonts/Gontserrat-Regular.ttf'),
+    'JoinMemberFont'
+);
+
+GlobalFonts.registerFromPath(
+    path.join(__dirname, '../../assets/fonts/Gontserrat-Bold.ttf'),
+    'JoinMemberFontBold'
+);
+
 class guildMemberAddListener extends Listener {
     constructor(context, options) {
         super(context, {    
@@ -82,15 +92,15 @@ class guildMemberAddListener extends Listener {
               ctx.restore();
     
             // Text
-            ctx.font = 'bold 42px Montserrat';
+            ctx.font = 'bold 42px JoinMemberFontBold';
             ctx.fillStyle = '#FFFFFF';
             ctx.fillText(`Bienvenue !`, 240, 100);
 
-             ctx.font = 'semi-bold 36px Montserrat';
+             ctx.font = '36px JoinMemberFontBold';
             ctx.fillStyle = '#9363c4';
             ctx.fillText('@' + member.user.username, 240, 145);
 
-            ctx.font = '26px Montserrat';
+            ctx.font = '26px JoinMemberFont';
             ctx.fillStyle = '#b9acff';
             ctx.fillText(`Membre #${member.guild.memberCount}`, 240, 185);
             // Create attachment and send

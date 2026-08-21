@@ -7,7 +7,7 @@ GlobalFonts.registerFromPath(
     'CardFont'
 );
 GlobalFonts.registerFromPath(
-    path.join(__dirname, '../assets/fonts/Gontserrat-Bold.ttf'),
+    path.join(__dirname, '../../assets/fonts/Gontserrat-Bold.ttf'),
     'CardFont-Bold'
 );
 
