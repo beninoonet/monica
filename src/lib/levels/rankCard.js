@@ -2,17 +2,15 @@ const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
 const path = require('path');
 const { xpForLevel } = require('./leveling');
 
-// Enregistre des polices embarquées dans le projet : indispensable car beaucoup
-// d'environnements de déploiement (Docker slim/alpine, etc.) n'ont AUCUNE police
-// système installée. Sans ça, @napi-rs/canvas dessine les formes mais pas le texte.
 GlobalFonts.registerFromPath(
-    path.join(__dirname, '../assets/fonts/dejavu-sans.condensed.ttf'),
+    path.join(__dirname, '../../assets/fonts/Gontserrat-Regular.ttf'),
     'CardFont'
 );
 GlobalFonts.registerFromPath(
-    path.join(__dirname, '../assets/fonts/dejavu-sans.condensed-bold.ttf'),
+    path.join(__dirname, '../assets/fonts/Gontserrat-Bold.ttf'),
     'CardFont-Bold'
 );
+
 
 const WIDTH = 1000;
 const HEIGHT = 300;
@@ -111,11 +109,11 @@ function drawSection(ctx, { label, level, xp, xpNeeded, rank, x, y, width, barCo
     const textX = x + iconSize + iconGap;
 
     ctx.textAlign = 'left';
-    ctx.font = 'bold 22px sans-serif';
+    ctx.font = 'bold 22px CardFont-Bold';
     ctx.fillStyle = '#d7d9e0';
     ctx.fillText(`${label} — Niveau ${level}`, textX, y);
 
-    ctx.font = '18px sans-serif';
+    ctx.font = '18px CardFont';
     ctx.textAlign = 'right';
     const rankText = rank ? `#${rank} · ` : '';
     ctx.fillStyle = '#9a9cab';
