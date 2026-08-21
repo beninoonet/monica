@@ -6,11 +6,11 @@ const { xpForLevel } = require('./leveling');
 // d'environnements de déploiement (Docker slim/alpine, etc.) n'ont AUCUNE police
 // système installée. Sans ça, @napi-rs/canvas dessine les formes mais pas le texte.
 GlobalFonts.registerFromPath(
-    path.join(__dirname, '../assets/fonts/DejaVuSans.ttf'),
+    path.join(__dirname, '../assets/fonts/dejavu-sans.condensed.ttf'),
     'CardFont'
 );
 GlobalFonts.registerFromPath(
-    path.join(__dirname, '../assets/fonts/DejaVuSans-Bold.ttf'),
+    path.join(__dirname, '../assets/fonts/dejavu-sans.condensed-bold.ttf'),
     'CardFont-Bold'
 );
 
