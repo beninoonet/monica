@@ -12,25 +12,49 @@ async function initDatabase() {
                 welcome_channel_id TEXT,
                 log_channel_id TEXT,
                 report_channel_id TEXT,
+                suggest_channel_id TEXT,
                 UNIQUE (guild_id)
             );
             CREATE TABLE IF NOT EXISTS monica_tasks (
                 id SERIAL PRIMARY KEY,
                 user_id TEXT NOT NULL,
-                username TEXT NOT NULL,
+                username TEXT NULL,
                 task TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT NOW(),
                 status TEXT DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT NOW(),
                 UNIQUE (id)
             );
             CREATE TABLE IF NOT EXISTS monica_suggestions (
                 id SERIAL PRIMARY KEY,
                 user_id TEXT NOT NULL,
-                username TEXT NOT NULL,
+                username TEXT NULL,
                 title TEXT NOT NULL,
                 suggestion TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT NOW(),
                 UNIQUE (id)
+            );
+            CREATE TABLE IF NOT EXISTS monica_levels (
+                guild_id TEXT NOT NULL,
+                user_id TEXT NOT NULL,
+                chat_xp INTEGER DEFAULT 0,
+                chat_level INTEGER DEFAULT 0,
+                voice_xp INTEGER DEFAULT 0,
+                voice_level INTEGER DEFAULT 0,
+                PRIMARY KEY (guild_id, user_id)
+            );
+            CREATE TABLE IF NOT EXISTS monica_levels_settings (
+                guild_id TEXT PRIMARY KEY,
+                chat_xp_min INT DEFAULT 5,
+                chat_xp_max INT DEFAULT 15,
+                voice_xp_minute INT DEFAULT 10,
+                vip_role_id TEXT DEFAULT NULL,  
+                UNIQUE (guild_id)
+            );
+            CREATE TABLE IF NOT EXISTS monica_birthdays (
+                guild_id TEXT NOT NULL,
+                user_id TEXT NOT NULL,
+                birthday_date DATE NOT NULL,
+                PRIMARY KEY (guild_id, user_id)
             );
             `
         );

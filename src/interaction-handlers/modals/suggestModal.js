@@ -20,7 +20,7 @@ class SuggestModalHandler extends InteractionHandler {
     async run(interaction) {
         
         // get channel suggest from the database limited to the first guild in the database
-        const res = await pool.query('SELECT report_channel_id FROM monica_guilds LIMIT 1');
+        const res = await pool.query('SELECT suggest_channel_id FROM monica_guilds LIMIT 1');
         if (res.rows.length === 0) {
             return interaction.reply({
                 content: '❌ Aucune configuration de serveur trouvée. Veuillez contacter un administrateur.',
@@ -28,9 +28,9 @@ class SuggestModalHandler extends InteractionHandler {
             });
         }
 
-        const reportChannelId = res.rows[0].report_channel_id;
-        const reportChannel = interaction.guild.channels.cache.get(reportChannelId);
-        if (!reportChannel) {
+        const suggestChannelId = res.rows[0].suggest_channel_id;
+        const suggestChannel = interaction.guild.channels.cache.get(suggestChannelId);
+        if (!suggestChannel) {
             return interaction.reply({
                 content: '❌ Le salon de suggestions configuré est introuvable. Veuillez contacter un administrateur.',
                 ephemeral: true
@@ -50,7 +50,7 @@ class SuggestModalHandler extends InteractionHandler {
             .setAuthor({ name: username, iconURL: interaction.user.displayAvatarURL() });
 
         try {
-            await reportChannel.send({ embeds: [embed] });
+            await suggestChannel.send({ embeds: [embed] });
 
             await pool.query(
                 `INSERT INTO monica_suggestions
