@@ -5,9 +5,10 @@ const axios = require("axios");
 
 const MANGA_RSS_URL = "https://www.manga-news.com/index.php/feed/news";
 const APPLI_RSS_URL = "https://www.01net.com/actualites/applis-logiciels/feed/";
+const LODESTONE_RSS_URL = "https://fr.finalfantasyxiv.com/lodestone/news/topics.xml";
 const mangaWebhook = new WebhookClient({ url: process.env.MANGA_WEBHOOK_URL });
-const appliWebhook = new WebhookClient({ url: process.env.APPLI_WEBHOOK_URL });
-
+const appliWebhook = new WebhookClient({ url: process.env.APPLI_WEBHOOK_URL });é
+const lodestoneWebhook = new WebhookClient({ url: process.env.LODESTONE_WEBHOOK_URL });
 
 async function fetchFeed(rssUrl) {
         const { data } = await axios.get("https://api.rss2json.com/v1/api.json", {
@@ -58,7 +59,23 @@ async function checkAppliRSS() {
 
 }
 
+async function checkLodestoneRSS() {
+     try {
+        const feed = await fetchFeed(LODESTONE_RSS_URL);
+        const lastest = feed.items[0];
+
+        await lodestoneWebhook.send({
+            content: `**${lastest.title}**\n${lastest.link}`
+        });
+    } catch (error) {
+        console.error("Erreur lors de l'envoi du message Discord:", error);
+        
+    };
+    
+}
+
 module.exports = {
     checkMangaRSS,
-    checkAppliRSS
+    checkAppliRSS,
+    checkLodestoneRSS
 }
