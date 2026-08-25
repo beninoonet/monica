@@ -7,7 +7,7 @@ const MANGA_RSS_URL = "https://www.manga-news.com/index.php/feed/news";
 const APPLI_RSS_URL = "https://www.01net.com/actualites/applis-logiciels/feed/";
 const LODESTONE_RSS_URL = "https://fr.finalfantasyxiv.com/lodestone/news/topics.xml";
 const mangaWebhook = new WebhookClient({ url: process.env.MANGA_WEBHOOK_URL });
-const appliWebhook = new WebhookClient({ url: process.env.APPLI_WEBHOOK_URL });é
+const appliWebhook = new WebhookClient({ url: process.env.APPLI_WEBHOOK_URL });
 const lodestoneWebhook = new WebhookClient({ url: process.env.LODESTONE_WEBHOOK_URL });
 
 async function fetchFeed(rssUrl) {

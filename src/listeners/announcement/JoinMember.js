@@ -2,6 +2,8 @@ const { Listener, Events } = require('@sapphire/framework');
 const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
 const { AttachmentBuilder } = require('discord.js');
 
+const path = require('path');
+
 require("dotenv").config();
 
 // DB 

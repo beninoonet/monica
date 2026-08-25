@@ -3,6 +3,7 @@ const { Listener, Events, container } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
 /* RSS */
+const { checkMangaRSS } = require('../lib/rss/checkRSS');
 const { IntervalRSS } = require('../lib/rss/IntervalRSS');
 /* DB */
 const pool = require('../lib/database');
@@ -20,7 +21,8 @@ async run(client) {
     console.log(`✅ Connecté en tant que ${client.user.tag}`);
     
     client.user.setActivity('💗 Amour Parano', { type: ActivityType.Listening });
-  
+    checkMangaRSS(); // Check RSS on startup
+
     IntervalRSS; // every 12 hours
     pool.connect()
       .then(() => {
