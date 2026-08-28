@@ -76,6 +76,23 @@ async function getProfile(guildId, userId) {
     return insertedRows[0];
 }
 
+async function setXp(guildId, userId, type, newXp) {
+    const xpColumn = type === 'chat' ? 'chat_xp' : 'voice_xp';
+    const levelColumn = type === 'chat' ? 'chat_level' : 'voice_level';
+    const profile = await getProfile(guildId, userId);
+    const newLevel = calculateLevel(newXp);
+
+    await pool.query(
+        `UPDATE monica_levels SET ${xpColumn} = $1, ${levelColumn} = $2 WHERE guild_id = $3 AND user_id = $4`,
+        [newXp, newLevel, guildId, userId]
+    );
+
+    return {
+        level: newLevel,
+        xp: newXp,
+    };
+}
+
 async function addXp(guildId, userId, amount, type) {
     const xpColumn = type === 'chat' ? 'chat_xp' : 'voice_xp';
     const levelColumn = type === 'chat' ? 'chat_level' : 'voice_level';
