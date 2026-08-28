@@ -18,7 +18,7 @@ class VoiceXpListener extends Listener {
 
         const wasInVoice = !!oldState.channelId;
         const isInVoice = !!newState.channelId;
-
+        console.log(`Voice state update for user ${userId} in guild ${guildId}: wasInVoice=${wasInVoice}, isInVoice=${isInVoice}`);
         // Entrée en vocal
         if (!wasInVoice && isInVoice) {
             if (newState.channelId !== afkChannelId) {
