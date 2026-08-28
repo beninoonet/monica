@@ -3,7 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 require("dotenv").config();
 
 // get the log channel from DB
-const { getLogChannel } = require('../../lib/getLogChannel');
+const { getLogChannel } = require('../../lib/logging/getLogChannel');
 
 class LogChannelRemoveListener extends Listener {
     constructor(context, options) {
