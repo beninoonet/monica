@@ -19,7 +19,7 @@ async run(client) {
     /* Client as ready */
     console.log(`✅ Connecté en tant que ${client.user.tag}`);
     
-    client.user.setActivity('💗 Amour Parano', { type: ActivityType.Listening });
+    client.user.setActivity('💗 Amour Passager', { type: ActivityType.Listening });
 
     IntervalRSS; // every 12 hours
     pool.connect()
