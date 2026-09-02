@@ -56,7 +56,18 @@ async function initDatabase() {
                 birthday_date DATE NOT NULL,
                 PRIMARY KEY (guild_id, user_id)
             );
-            `
+            CREATE TABLE IF NOT EXISTS monica_honeypot_settings (
+                guild_id TEXT PRIMARY KEY,
+                honeypot_channel_id TEXT,
+                UNIQUE (guild_id)
+            );
+            CREATE TABLE IF NOT EXISTS monica_honeypot_logs (
+                guild_id TEXT NOT NULL,
+                user_id TEXT NOT NULL,
+                logs_channel_id TEXT NOT NULL,
+                PRIMARY KEY (guild_id, user_id)
+            );
+        `
         );
         console.log('✅ Table "guilds" créée ou déjà existante.');
     }

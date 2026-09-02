@@ -21,10 +21,9 @@ class ReadyListener extends Listener {
 async run(client) {
     /* Client as ready */
     console.log(`✅ Connecté en tant que ${client.user.tag}`);
+  
+    client.user.setActivity('💗 Amour Passager', { type: ActivityType.Listening });
     
-    client.user.setActivity('💗 Amour Parano', { type: ActivityType.Listening });
-    checkMangaRSS(); // Check RSS on startup
-
     IntervalRSS; // every 12 hours
     pool.connect()
       .then(() => {

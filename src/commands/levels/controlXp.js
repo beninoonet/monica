@@ -171,7 +171,8 @@ class XpControlCommand extends Subcommand {
             .setTitle(`XP réinitialisée pour ${user.tag}`)
             .setDescription(
                 `➖ **Niveau réinitialisé de ${user}.\n` +
-                `Niveau actuel : **0** (${result.xp} XP)`
+                `Niveau actuel : **0** (0 XP)
+                ${typeLabel} réinitialisé.`
             )
             .setColor('Orange')
             .setTimestamp();
