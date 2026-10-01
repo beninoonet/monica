@@ -3,7 +3,7 @@ const { Listener, Events } = require('@sapphire/framework');
 const { PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { isHoneypotChannel } = require('../../lib/honeypotLib');
 
-const { getLogChannel } = require('../../lib/getLogChannel');
+const { getLogChannel } = require('../../lib/logging/logConfig');
 class HoneypotEvent extends Listener {
   constructor(context, options) {
     super(context, { ...options, event: Events.MessageCreate, once: false });

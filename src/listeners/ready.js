@@ -2,10 +2,7 @@ require("dotenv").config();
 const { Listener, Events, container } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
-const logging = require('../lib/logging/allLog');
-
 /* RSS */
-const { checkMangaRSS } = require('../lib/rss/checkRSS');
 const { IntervalRSS } = require('../lib/rss/IntervalRSS');
 /* DB */
 const pool = require('../lib/database');
@@ -56,8 +53,6 @@ async run(client) {
         console.error('❌ Erreur lors de l\'ajout de la guild à la base de données:', err);
       });
     }
-    
-    logging.logEvent(client, 'guild_id', 'Bot Ready', 'Le bot est prêt et connecté à Discord.');
     
   }
 }
