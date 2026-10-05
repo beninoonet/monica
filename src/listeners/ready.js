@@ -3,7 +3,7 @@ const { Listener, Events, container } = require('@sapphire/framework');
 const { ActivityType } = require('discord.js');
 
 /* RSS */
-const { IntervalRSS } = require('../lib/RSS/IntervalRSS');
+// const { IntervalRSS } = require('../lib/rss/IntervalRSS');
 /* DB */
 const pool = require('../lib/database');
 const { initDatabase } = require('../lib/initDatabase');
@@ -18,10 +18,10 @@ class ReadyListener extends Listener {
 async run(client) {
     /* Client as ready */
     console.log(`✅ Connecté en tant que ${client.user.tag}`);
-    
+  
     client.user.setActivity('💗 Amour Passager', { type: ActivityType.Listening });
-
-    IntervalRSS; // every 12 hours
+    
+    // const IntervalRSS = new IntervalRSS(); // every 12 hours
     pool.connect()
       .then(() => {
         console.log('✅ Connecté à la base de données PostgreSQL');
@@ -54,7 +54,6 @@ async run(client) {
       });
     }
     
-
   }
 }
 
