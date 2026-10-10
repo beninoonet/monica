@@ -67,6 +67,47 @@ async function initDatabase() {
                 logs_channel_id TEXT NOT NULL,
                 PRIMARY KEY (guild_id, user_id)
             );
+            CREATE TABLE IF NOT EXISTS monica_giveaways (
+                id SERIAL PRIMARY KEY,
+                guild_id TEXT NOT NULL,
+                prize TEXT NOT NULL,
+                description TEXT NOT NULL,
+                end_date TIMESTAMP NOT NULL,
+                image_url TEXT,
+                winner_count INT NOT NULL,
+                channel_id TEXT,
+                message_id TEXT,
+                status TEXT NOT NULL DEFAULT 'active',
+                created_at TIMESTAMP DEFAULT NOW(),
+                ended_at TIMESTAMP,
+                UNIQUE (id)
+            );
+            ALTER TABLE monica_giveaways
+                ADD COLUMN IF NOT EXISTS channel_id TEXT,
+                ADD COLUMN IF NOT EXISTS message_id TEXT,
+                ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active',
+                ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW(),
+                ADD COLUMN IF NOT EXISTS ended_at TIMESTAMP;
+            CREATE TABLE IF NOT EXISTS monica_giveaway_entries (
+                giveaway_id INT NOT NULL REFERENCES monica_giveaways(id) ON DELETE CASCADE,
+                user_id TEXT NOT NULL,
+                joined_at TIMESTAMP DEFAULT NOW(),
+                PRIMARY KEY (giveaway_id, user_id)
+            );
+            CREATE TABLE IF NOT EXISTS monica_twitch_channels (
+                guild_id TEXT NOT NULL,
+                twitch_login TEXT NOT NULL,
+                twitch_user_id TEXT NOT NULL,
+                twitch_display_name TEXT NOT NULL,
+                announcement_channel_id TEXT NOT NULL,
+                last_stream_id TEXT,
+                scheduled_event_id TEXT,
+                is_live BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT NOW(),
+                PRIMARY KEY (guild_id, twitch_login)
+            );
+            ALTER TABLE monica_twitch_channels
+                ADD COLUMN IF NOT EXISTS scheduled_event_id TEXT;
         `
         );
         console.log('✅ Table "guilds" créée ou déjà existante.');
