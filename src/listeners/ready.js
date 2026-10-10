@@ -7,6 +7,8 @@ const { ActivityType } = require('discord.js');
 /* DB */
 const pool = require('../lib/database');
 const { initDatabase } = require('../lib/initDatabase');
+const { startGiveawayScheduler } = require('../lib/giveaway/giveawayService');
+const { startTwitchAnnouncements } = require('../lib/twitch/streamAnnouncementService');
 
 class ReadyListener extends Listener {
   constructor(context, options) {
@@ -37,6 +39,8 @@ async run(client) {
     ).catch((err) => {
       console.error('❌ Erreur lors de l\'initialisation des tables de la base de données:', err);
     });
+    startGiveawayScheduler(client);
+    startTwitchAnnouncements(client);
 
       // Add a guild to the database when the bot is ready
       for (const guild of client.guilds.cache.values()) {
