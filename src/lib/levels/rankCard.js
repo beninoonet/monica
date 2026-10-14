@@ -204,4 +204,68 @@ async function generateRankCard({ username, avatarUrl, chat, voice, chatRank, vo
     return canvas.toBuffer('image/png');
 }
 
-module.exports = { generateRankCard };
+async function generateXpCard({ username, avatarUrl, amount, type, level, leveledUp }) {
+    const canvas = createCanvas(WIDTH, HEIGHT);
+    const ctx = canvas.getContext('2d');
+
+    const bgGradient = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
+    bgGradient.addColorStop(0, '#1e1f29');
+    bgGradient.addColorStop(1, '#2a2c3d');
+    roundRect(ctx, 0, 0, WIDTH, HEIGHT, 24);
+    ctx.fillStyle = bgGradient;
+    ctx.fill();
+
+    const avatarSize = 200;
+    const avatarX = 40;
+    const avatarY = (HEIGHT - avatarSize) / 2;
+
+    try {
+        const response = await fetch(avatarUrl);
+        const buffer = Buffer.from(await response.arrayBuffer());
+        const avatarImg = await loadImage(buffer);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(avatarImg, avatarX, avatarY, avatarSize, avatarSize);
+        ctx.restore();
+    } catch (err) {
+        ctx.beginPath();
+        ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#44465a';
+        ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2 + 4, 0, Math.PI * 2);
+    ctx.strokeStyle = type === 'voice' ? '#00C2FF' : '#FFB800';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    const textX = avatarX + avatarSize + 40;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 42px CardFont-Bold';
+    ctx.fillText(username, textX, 90);
+
+    ctx.fillStyle = type === 'voice' ? '#00C2FF' : '#FFB800';
+    ctx.font = 'bold 56px CardFont-Bold';
+    ctx.fillText(`+${amount} XP`, textX, 165);
+
+    ctx.fillStyle = '#d7d9e0';
+    ctx.font = '22px CardFont';
+    ctx.fillText(type === 'voice' ? 'XP vocal' : 'XP de chat', textX, 205);
+
+    ctx.fillStyle = '#9a9cab';
+    ctx.font = '20px CardFont';
+    ctx.fillText(
+        leveledUp ? `Niveau ${level} atteint !` : `Niveau ${level}`,
+        textX,
+        245
+    );
+
+    return canvas.toBuffer('image/png');
+}
+
+module.exports = { generateRankCard, generateXpCard };

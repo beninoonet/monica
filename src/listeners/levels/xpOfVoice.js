@@ -1,6 +1,7 @@
 const { Listener } = require('@sapphire/framework');
-const { Events, EmbedBuilder } = require('discord.js');
+const { Events, AttachmentBuilder } = require('discord.js');
 const { addXp, getXpThresholds } = require('../../lib/levels/leveling');
+const { generateXpCard } = require('../../lib/levels/rankCard');
 require('dotenv').config();
 
 const voiceSessions = new Map();
@@ -81,22 +82,28 @@ class VoiceXpListener extends Listener {
         const result = await addXp(guildId, userId, amount, 'voice');
 
         if (result.leveledUp) {
-            await this.announceLevelUp(state, userId, result.newLevel);
+            await this.announceLevelUp(state, userId, result.newLevel, amount);
         }
     }
 
-    async announceLevelUp(state, userId, newLevel) {
+    async announceLevelUp(state, userId, newLevel, amount) {
         const channelId = process.env.levelup_channel_id;
         const channel = channelId ? state.guild.channels.cache.get(channelId) : null;
         if (!channel) return;
 
-        const embed = new EmbedBuilder()
-            .setColor('Aqua')
-            .setDescription(`🎙️ <@${userId}> vient de passer **niveau ${newLevel}** en vocal !`);
+        const user = state.member?.user ?? (await state.guild.members.fetch(userId)).user;
+        const buffer = await generateXpCard({
+            username: user.username,
+            avatarUrl: user.displayAvatarURL({ extension: 'png', size: 256 }),
+            amount,
+            type: 'voice',
+            level: newLevel,
+            leveledUp: true,
+        });
 
-        await channel.send({ embeds: [embed] });
-
-
+        await channel.send({
+            files: [new AttachmentBuilder(buffer, { name: 'xp-vocal.png' })],
+        });
     }
 
 

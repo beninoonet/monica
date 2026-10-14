@@ -1,6 +1,7 @@
 const { Listener } = require('@sapphire/framework');
-const { Events, EmbedBuilder } = require('discord.js');
+const { Events, AttachmentBuilder } = require('discord.js');
 const { addXp, randomChatXp, CHAT_XP_COOLDOWN_MS } = require('../../lib/levels/leveling');
+const { generateXpCard } = require('../../lib/levels/rankCard');
 require('dotenv').config();
 
 const cooldowns = new Map();
@@ -24,22 +25,29 @@ class ChatXpListener extends Listener {
         const result = await addXp(message.guild.id, message.author.id, amount, 'chat');
 
         if (result.leveledUp) {
-            await this.announceLevelUp(message, result.newLevel);
+            await this.announceLevelUp(message, result.newLevel, amount);
         }
     }
 
-    async announceLevelUp(message, newLevel) {
+    async announceLevelUp(message, newLevel, amount) {
         const channelId = process.env.levelup_channel_id;
         const channel = channelId
             ? message.guild.channels.cache.get(channelId)
             : message.channel;
         if (!channel) return;
 
-        const embed = new EmbedBuilder()
-            .setColor('Gold')
-            .setDescription(`🎉 ${message.author} vient de passer **niveau ${newLevel}** au chat !`);
+        const buffer = await generateXpCard({
+            username: message.author.username,
+            avatarUrl: message.author.displayAvatarURL({ extension: 'png', size: 256 }),
+            amount,
+            type: 'chat',
+            level: newLevel,
+            leveledUp: true,
+        });
 
-        await channel.send({ embeds: [embed] });
+        await channel.send({
+            files: [new AttachmentBuilder(buffer, { name: 'xp-chat.png' })],
+        });
     }
 }
 
