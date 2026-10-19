@@ -82,6 +82,9 @@ class SearchCommand extends Subcommand {
         return interaction.reply({ content: 'Une erreur est survenue lors de la récupération du streamer.', ephemeral: true });
        }
     }
+    
+    
+    
   /* END OF CODE */
 }
 

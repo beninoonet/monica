@@ -24,7 +24,6 @@ Monica est mon projet de bot discord personnel qui m'aide à gérer mon serveur 
 | Database          | Connection to PostGres DB                              | ✅     |
 | /tasklist         | command tasklist connect with a db                     | ✅     |
 | /giveaway         | Giveaway avec inscription, stockage PostgreSQL et tirage automatique | ✅ |
-| Webhook URL on db | Connect a webhook url to db                             | ❌     |
 
 ## Installation
 
@@ -32,7 +31,7 @@ Monica est mon projet de bot discord personnel qui m'aide à gérer mon serveur 
 git clone https://github.com/beninoonet/monica.git
 npm install
 ```
-
+Après ça, vous devez créer un `.env` comportant le contenu suivant:
 after that, you need to create a `.env` file with the following content:
 
 ```
@@ -64,13 +63,7 @@ DB_NAME=
 TWITCH_CLIENT_ID=
 TWITCH_CLIENT_SECRET=
 
-# LAVALINK configuration
-LAVALINK_PASSWORD=
-LAVALINK_HOST=
-LAVALINK_PORT=
 ```
-
-after that, you can run the bot with the following command:
 
 ```
 node .
@@ -86,12 +79,14 @@ Les administrateurs peuvent configurer les annonces avec :
 - `/twitch channel channel` pour changer le salon d'annonce de toutes les chaînes.
 
 Le bot vérifie les chaînes configurées toutes les minutes et publie une annonce
-au début et à la fin de chaque live. Un évènement externe Discord est créé pour
+au début et à la fin de chaque live. La preview du live est actualisée toutes
+les 30 minutes dans le même message. Un évènement externe Discord est créé pour
 chaque nouveau live et activé immédiatement, puis sa date de fin est fixée et
-l'évènement est marqué comme terminé lorsque le stream s'arrête.
+l'évènement est supprimé automatiquement lorsque le stream s'arrête.
 Les chaînes, l'état du dernier live et l'évènement associé sont conservés dans
 PostgreSQL. Le bot doit disposer de la permission **Gérer les évènements**.
 Les variables `TWITCH_CLIENT_ID` et `TWITCH_CLIENT_SECRET` sont nécessaires.
+
 
 ### Giveaways
 

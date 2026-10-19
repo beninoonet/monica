@@ -101,12 +101,16 @@ async function initDatabase() {
                 twitch_display_name TEXT NOT NULL,
                 announcement_channel_id TEXT NOT NULL,
                 last_stream_id TEXT,
+                announcement_message_id TEXT,
+                preview_updated_at TIMESTAMP,
                 scheduled_event_id TEXT,
                 is_live BOOLEAN NOT NULL DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT NOW(),
                 PRIMARY KEY (guild_id, twitch_login)
             );
             ALTER TABLE monica_twitch_channels
+                ADD COLUMN IF NOT EXISTS announcement_message_id TEXT,
+                ADD COLUMN IF NOT EXISTS preview_updated_at TIMESTAMP,
                 ADD COLUMN IF NOT EXISTS scheduled_event_id TEXT;
         `
         );

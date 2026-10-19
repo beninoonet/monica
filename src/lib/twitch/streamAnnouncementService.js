@@ -7,6 +7,19 @@ const {
 const pool = require('../database');
 const TwitchClient = require('./twitchApi');
 
+const PREVIEW_UPDATE_INTERVAL = 30 * 60 * 1000;
+
+function buildStreamEmbed(channel, stream) {
+    return new EmbedBuilder()
+        .setColor('#9146FF')
+        .setTitle(`${channel.twitch_display_name} est en live sur Twitch !`)
+        .setURL(`https://www.twitch.tv/${channel.twitch_login}`)
+        .setDescription(stream.title || 'Nouveau live en cours.')
+        .addFields({ name: 'Jeu', value: stream.game_name || 'Non précisé', inline: true })
+        .setImage(stream.thumbnail_url.replace('{width}', '1280').replace('{height}', '720'))
+        .setTimestamp(new Date(stream.started_at));
+}
+
 async function announceStreamEnd(client, channel) {
     const announcementChannel = await client.channels.fetch(channel.announcement_channel_id).catch((error) => {
         console.error(`❌ Impossible de récupérer le salon d'annonce Twitch ${channel.announcement_channel_id}:`, error);
@@ -14,11 +27,19 @@ async function announceStreamEnd(client, channel) {
     });
     if (announcementChannel && announcementChannel.isTextBased()) {
         try {
-            await announcementChannel.send({
-                content: `⚫ **${channel.twitch_display_name}** a terminé son live Twitch.`
-            });
+            if (channel.announcement_message_id) {
+                const message = await announcementChannel.messages.fetch(channel.announcement_message_id);
+                await message.edit({
+                    content: `⚫ **${channel.twitch_display_name}** a terminé son live Twitch.`,
+                    embeds: []
+                });
+            } else {
+                await announcementChannel.send({
+                    content: `⚫ **${channel.twitch_display_name}** a terminé son live Twitch.`
+                });
+            }
         } catch (error) {
-            console.error(`❌ Impossible d'envoyer la fin du live Twitch ${channel.twitch_login}:`, error);
+            console.error(`❌ Impossible de modifier le message de fin du live Twitch ${channel.twitch_login}:`, error);
         }
     }
 
@@ -32,15 +53,10 @@ async function announceStreamEnd(client, channel) {
 
     try {
         const event = await guild.scheduledEvents.fetch(channel.scheduled_event_id);
-        if (event.status === GuildScheduledEventStatus.Active) {
-            await event.setScheduledEndTime(new Date());
-            await event.setStatus(GuildScheduledEventStatus.Completed);
-        } else if (event.status === GuildScheduledEventStatus.Scheduled) {
-            await event.setStatus(GuildScheduledEventStatus.Canceled);
-        }
+        await event.delete();
     } catch (error) {
         console.error(
-            `❌ Impossible de finaliser l'évènement Discord du live Twitch ${channel.twitch_login}:`,
+            `❌ Impossible de supprimer l'évènement Discord du live Twitch ${channel.twitch_login}:`,
             error
         );
     }
@@ -54,6 +70,7 @@ async function createStreamEvent(guild, channel, stream) {
         scheduledEndTime: new Date(scheduledStartTime.getTime() + 4 * 60 * 60 * 1000),
         privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
         entityType: GuildScheduledEventEntityType.External,
+        image: stream.thumbnail_url.replace('{width}', '1280').replace('{height}', '720'),
         entityMetadata: { location: `https://www.twitch.tv/${channel.twitch_login}` },
         description: stream.title || `Live Twitch de ${channel.twitch_display_name}`
     });
@@ -64,7 +81,8 @@ async function createStreamEvent(guild, channel, stream) {
 async function checkTwitchStreams(client) {
     const configured = await pool.query(
         `SELECT guild_id, twitch_login, twitch_display_name, announcement_channel_id,
-                last_stream_id, scheduled_event_id, is_live
+                last_stream_id, announcement_message_id, preview_updated_at,
+                scheduled_event_id, is_live
          FROM monica_twitch_channels`
     );
     if (!configured.rows.length) return;
@@ -79,14 +97,41 @@ async function checkTwitchStreams(client) {
                 await announceStreamEnd(client, channel);
                 await pool.query(
                     `UPDATE monica_twitch_channels
-                     SET is_live = FALSE, last_stream_id = NULL, scheduled_event_id = NULL
+                     SET is_live = FALSE, last_stream_id = NULL,
+                         announcement_message_id = NULL, preview_updated_at = NULL,
+                         scheduled_event_id = NULL
                      WHERE guild_id = $1 AND twitch_login = $2`,
                     [channel.guild_id, channel.twitch_login]
                 );
             }
             continue;
         }
-        if (channel.is_live && channel.last_stream_id === stream.id) continue;
+        if (channel.is_live && channel.last_stream_id === stream.id) {
+            if (
+                channel.announcement_message_id &&
+                (!channel.preview_updated_at ||
+                    Date.now() - new Date(channel.preview_updated_at).getTime() >= PREVIEW_UPDATE_INTERVAL)
+            ) {
+                const announcementChannel = await client.channels.fetch(channel.announcement_channel_id).catch((error) => {
+                    console.error(`❌ Impossible de récupérer le salon d'annonce Twitch ${channel.announcement_channel_id}:`, error);
+                    return null;
+                });
+                if (announcementChannel && announcementChannel.isTextBased()) {
+                    try {
+                        const message = await announcementChannel.messages.fetch(channel.announcement_message_id);
+                        await message.edit({ embeds: [buildStreamEmbed(channel, stream)] });
+                        await pool.query(
+                            `UPDATE monica_twitch_channels SET preview_updated_at = NOW()
+                             WHERE guild_id = $1 AND twitch_login = $2`,
+                            [channel.guild_id, channel.twitch_login]
+                        );
+                    } catch (error) {
+                        console.error(`❌ Impossible de mettre à jour la preview Twitch ${channel.twitch_login}:`, error);
+                    }
+                }
+            }
+            continue;
+        }
         // Stream is live and either it's a new stream or the channel was previously offline
         if (channel.is_live) {
             await announceStreamEnd(client, channel);
@@ -96,18 +141,9 @@ async function checkTwitchStreams(client) {
             return null;
         });
         if (!announcementChannel || !announcementChannel.isTextBased()) continue;
-        const embed = new EmbedBuilder()
-            .setColor('#9146FF')
-            .setTitle(`${channel.twitch_display_name} est en live sur Twitch !`)
-            .setURL(`https://www.twitch.tv/${channel.twitch_login}`)
-            .setDescription(stream.title || 'Nouveau live en cours.')
-            .addFields({ name: 'Jeu', value: stream.game_name || 'Non précisé', inline: true })
-            .setImage(stream.thumbnail_url.replace('{width}', '1280').replace('{height}', '720'))
-            .setTimestamp(new Date(stream.started_at));
-
-        await announcementChannel.send({
-            content: `🔴 **${channel.twitch_display_name}** est en live !`,
-            embeds: [embed]
+        const announcement = await announcementChannel.send({
+            content: `🔴 **${channel.twitch_display_name}** est en live ! \n||@everyone||`,
+            embeds: [buildStreamEmbed(channel, stream)]
         });
 
         const guild = await client.guilds.fetch(channel.guild_id).catch((error) => {
@@ -132,9 +168,10 @@ async function checkTwitchStreams(client) {
 
         await pool.query(
             `UPDATE monica_twitch_channels
-             SET is_live = TRUE, last_stream_id = $1, scheduled_event_id = $2
-             WHERE guild_id = $3 AND twitch_login = $4`,
-            [stream.id, scheduledEventId, channel.guild_id, channel.twitch_login]
+             SET is_live = TRUE, last_stream_id = $1, announcement_message_id = $2,
+                 preview_updated_at = NOW(), scheduled_event_id = $3
+             WHERE guild_id = $4 AND twitch_login = $5`,
+            [stream.id, announcement.id, scheduledEventId, channel.guild_id, channel.twitch_login]
         );
     }
 }
