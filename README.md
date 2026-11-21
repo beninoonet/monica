@@ -69,6 +69,25 @@ TWITCH_CLIENT_SECRET=
 node .
 ```
 
+### Docker Compose (VPS)
+
+Copiez le fichier d'exemple puis renseignez les secrets Discord et Twitch :
+
+```bash
+cp .env.example .env
+nano .env
+docker compose up -d --build
+docker compose logs -f bot
+```
+
+PostgreSQL est inclus et ses données sont conservées dans le volume Docker
+`postgres-data`. Modifiez impérativement `POSTGRES_PASSWORD` avant le premier
+démarrage. Pour arrêter le bot sans supprimer la base :
+
+```bash
+docker compose down
+```
+
 ### Annonces Twitch
 
 Les administrateurs peuvent configurer les annonces avec :
